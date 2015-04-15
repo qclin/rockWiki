@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<body>
+	<!-- update form -->
+	<h3>Update <%= page.name %> here:</h3>
+	<form method="POST" action="/wikipages/<%= page.id %>?_method=PUT">
+		<input type="text" name="title" value="<%= page.title %>"><br>
+
+	<!-- choose contributor id  -->
+	<div> 
+	<% Object.keys(user).forEach(function(key){ %>
+	<select name ="user">
+		<option> <%= user[key].id %><%= user[key].name %></option>
+		<option selected> new user </option>
+	</select>
+	<% }); %> 
+	<!-- assign lastest id to new user -->
+	<input type ="text" name ="user" placeholder ="new user">
+	</div>
+
+		<input type="text" name ="image" value="<%= page.image %>"><br>
+
+		<textarea name="content" rows="30" cols="60" ><%= page.content %></textarea><br>
+		
+		<input type ="text" name ="references" value= "<%= page.reference %>"><br>
+		<input type ="text" name ="references" value= "<%= page.reference %>"><br>
+		<input type ="text" name ="references" value= "<%= page.reference %>"><br>
+		<input type ="text" name ="references" value= "<%= page.reference %>"><br>
+		<input type ="text" name ="references" value= "<%= page.reference %>"><br>
+		<input type ="text" name ="references" value= "<%= page.reference %>"><br>
+		<input type ="text" name ="references" value= "<%= page.reference %>"><br>
+		<input type ="text" name ="references" value= "<%= page.reference %>"><br>
+		<input type ="text" name ="references" value= "<%= page.reference %>"><br>
+		<input type ="text" name ="references" value= "<%= page.reference %>"><br>
+		<input type ="text" name ="references" value= "<%= page.reference %>"><br>
+		<input type ="text" name ="references" value= "<%= page.reference %>"><br>
+
+		<input type="text" name="edit_summary" placeholder ="please summarize your changes" required> 
+
+		<button>update</button>
+	</form>
+</body>
+</html>

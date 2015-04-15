@@ -1,0 +1,49 @@
+<!DOCTYPE html> 
+<head> 
+	<title> new </title>
+</head> 
+<body> 
+
+<!-- register new user  -->
+<a href "/users/new"> must register to write</a>
+
+<h2> write a new entry </h2> 
+
+<form method = "POST" action = "/documents" >
+
+	<input type ="text" name = "title" placeholder ="title" required><br>
+	<!-- author select -dropdown from user's table -->
+	<% Object.keys(users).forEach(function(key){ %>
+	<select name ="author" required>
+		<option> <%= users[key].id %><%= users[key].name %></option>
+	</select>
+	<% }); %> 
+	<!-- wiki contents -->
+	<input type="text" name ="image" placeholder = "image url"></br>
+
+	<textarea name="content" placeholder = "write wiki content" rows="30" cols="60" ></textarea><br>
+
+
+	<input type ="text" name ="references" placeholder = "enter reference link"><br>
+	<input type ="text" name ="references" placeholder = "enter reference link"><br>
+	<input type ="text" name ="references" placeholder = "enter reference link"><br>
+	<input type ="text" name ="references" placeholder = "enter reference link"><br>
+	<input type ="text" name ="references" placeholder = "enter reference link"><br>
+	<input type ="text" name ="references" placeholder = "enter reference link"><br>
+	<input type ="text" name ="references" placeholder = "enter reference link"><br>
+	<input type ="text" name ="references" placeholder = "enter reference link"><br>
+	<input type ="text" name ="references" placeholder = "enter reference link"><br>
+	<input type ="text" name ="references" placeholder = "enter reference link"><br>
+	<input type ="text" name ="references" placeholder = "enter reference link"><br>
+	<input type ="text" name ="references" placeholder = "enter reference link"><br>
+
+
+
+
+	<button> submit </button>
+</form> 
+
+<a href = "/documents"> nevermind, see existing documents</a>
+
+</body>
+</html>
