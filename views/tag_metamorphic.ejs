@@ -1,0 +1,27 @@
+<!DOCTYPE html> 
+<head>
+<style>
+	.list{
+		display: inline-block;
+		margin:10px;
+	}
+</style>
+</head>
+
+	<body> 
+		<h1> metamorphic rocks  </h1> 
+		
+		<p> Metamorphic rocks have been modified by heat, pressure and chemical process usually while buried deep below Earth's surface. Exposure to these extreme conditions has altered the mineralogy, texture and chemical composition of the rocks. There are two basic types of metamorphic rocks: 1) foliated metamorphic rocks such as gneiss, phyllite, schist and slate which have a layered or banded appearance that is produced by exposure to heat and directed pressure; and, 2) non-foliated metamorphic rocks such as marble and quartzite which do not have a layered or banded appearance. Pictures and brief descriptions of some common types of metamorphic rocks are shown on this page.</p>
+
+			<% Object.keys(documents).forEach(function(key){ %>
+			<div class = "list">
+				<h3> <%= documents[key].title %> </h3><br> 
+				<img src= "<%= documents[key].image %>" height = "100px" width = "auto"><br>
+				<a href = "/documents/<%= documents[key].id %>"> read more </a>
+
+			</div>
+			<% }); %>
+
+		<br><a href = "/"> return to search </a>
+	</body>
+	</html>

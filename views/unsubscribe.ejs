@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<body>
+	<!-- unsubscribe form -->
+	<h1> are you sure you want to do this?  </h1>
+	<h3>unsubscribe to <%= document.title %> here:</h3>
+
+	<form method="POST" action="/documents/<%= document.id %>/unsubscribe?_method=DELETE">
+	<!-- choose subscriber id  -->
+	<select name ="user">
+		<option> select user </option>
+		<% Object.keys(users).forEach(function(key){ %>
+		<option value = "<%= users[key].id %>"> <%= users[key].name %></option>
+		<% }); %> 
+	</select>
+
+	<button>remove subscription</button>
+	</form>
+</body>

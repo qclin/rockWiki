@@ -1,0 +1,30 @@
+<!DOCTYPE html> 
+
+<html>
+<head> 
+	<title> update </title>
+</head> 
+<body> 
+
+	<h2> edit your profile </h2>
+
+	<form method = "POST" action = "/users/<%= user.id %>?_method=PUT" >
+
+		<input type ="text" name ="name" value = "<%= user.name %>">
+		<input type ="text" name ="location" value = "<%= user.location %>">
+		<input type ="text" name ="pitch" value = "<%= user.pitch %>">
+		<input type ="text" name ="email_address" value = "<%= user.email_address %>">
+
+		<div class ="subscribed">
+			unsubscribed: <br>
+			<% subscription.forEach(function(key){ %> 
+			<input type="checkbox" name = "doc" value = "<%= key.id %>"> <%= key.title %> </a> 
+			<% }); %>
+		</div>
+
+		<button> update </button>
+	</form> 
+
+<a href="/users"> see all contributors </a>
+</body>
+</html>

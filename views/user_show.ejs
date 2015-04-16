@@ -31,6 +31,7 @@
 		<% }); %>
 	</div>
 
+	<a href ="/users/<%= users.id %>/edit"> edit user profile </a>
 	<!-- delete the user -->
 	<form method="POST" action="/users/<%= users.id %>?_method=DELETE">
 		<button>DELETE user</button>

@@ -1,6 +1,11 @@
 <!DOCTYPE html> 
 <head>
-
+<style>
+	.list{
+		display: inline-block;
+		margin:10px;
+	}
+</style>
 </head>
 
 	<body> 
@@ -9,11 +14,15 @@
 			<% Object.keys(documents).forEach(function(key){ %>
 			<div class = "list">
 				<h3> <%= documents[key].title %> </h3><br> 
+				<img src= "<%= documents[key].image %>" height = "100px" width = "auto"><br>
 				<a href = "/documents/<%= documents[key].id %>"> read more </a>
+
 			</div>
 			<% }); %>
 
 
-		<br><a href ="/documents/new"> write new post </a>
+		<br><a href ="/documents/new"> write new post </a><br>
+		<a href = "/users"> view contributors </a><br>
+		<a href = "/"> return to search </a>
 	</body>
 	</html>

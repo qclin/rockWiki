@@ -1,0 +1,27 @@
+<!DOCTYPE html> 
+<head>
+<style>
+	.list{
+		display: inline-block;
+		margin:10px;
+	}
+</style>
+</head>
+
+	<body> 
+		<h1> sedimentary rocks  </h1> 
+		
+		<p> Sedimentary rocks are formed by the accumulation of sediments. There are three basic types of sedimentary rocks: 1) clastic sedimentary rocks such as breccia, conglomerate, sandstone and shale, that are formed from mechanical weathering debris; 2) chemical sedimentary rocks such as rock salt and some limestones, that form when dissolved materials precipitate from solution; and, 3) organic sedimentary rocks such as coal and some limestones which form from the accumulation of plant or animal debris. Pictures and brief descriptions of some common sedimentary rock types are shown below.</p>
+
+			<% Object.keys(documents).forEach(function(key){ %>
+			<div class = "list">
+				<h3> <%= documents[key].title %> </h3><br> 
+				<img src= "<%= documents[key].image %>" height = "100px" width = "auto"><br>
+				<a href = "/documents/<%= documents[key].id %>"> read more </a>
+
+			</div>
+			<% }); %>
+
+		<br><a href = "/"> return to search </a>
+	</body>
+	</html>
