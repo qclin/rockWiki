@@ -1,0 +1,19 @@
+<!DOCTYPE html> 
+<head>
+
+</head>
+
+	<body> 
+		<h1> wiki ~/ rocks \~ kiwi  </h1> 
+		
+			<% Object.keys(documents).forEach(function(key){ %>
+			<div class = "list">
+				<h3> <%= documents[key].title %> </h3><br> 
+				<a href = "/documents/<%= documents[key].id %>"> read more </a>
+			</div>
+			<% }); %>
+
+
+		<br><a href ="/documents/new"> write new post </a>
+	</body>
+	</html>

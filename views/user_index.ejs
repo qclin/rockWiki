@@ -1,0 +1,20 @@
+<!DOCTYPE html> 
+<head>
+
+</head>
+
+	<body> 
+		<h1> wiki ~/ rockers \~ kiwi  </h1> 
+		
+			<% Object.keys(users).forEach(function(key){ %>
+				<a href = "/users/<%= users[key].id %>"><%= users[key].name %></a> 
+				<p> of <%= users[key].location %> </p><br>
+			<% }); %>
+
+
+		<a href ="/users/new"> register here </a><br>
+		<a href ="/"> return to wiki base</a>
+	</body>
+</html>
+
+

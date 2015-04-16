@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS documents;
 CREATE TABLE documents(
 	id INTEGER PRIMARY KEY AUTOINCREMENT, 
 	title TEXT, author_id INTEGER, 
-	content TEXT, tags TEXT,
+	content TEXT, image TEXT, tags TEXT,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -16,6 +16,7 @@ CREATE TABLE users(
 	id INTEGER PRIMARY KEY AUTOINCREMENT, 
 	name TEXT,
 	location TEXT,
+	pitch TEXT,
 	email_address TEXT
 );
 

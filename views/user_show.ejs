@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<h2><%= users.name %></h2>
+	<p>@ <%= users.location %>, <%= users.pitch %></p>
+
+
+	<div class ="authored">
+	wrote: <br>
+		<% for(var i = 0; i < authorship.length; i++){ %>
+		<a href="/documents/<%= authorship[i].id %>"> <%= authorship[i].title %> </a> on <%= authorship[i].created_at %>
+		<% } %>
+	</div>
+
+	<div class ="contributed">
+	contributed to: <br>
+		<% for(var j = 0; j < contribution.length; j++){ %>
+		<a href="/documents/<%= contribution[j].id %>"> <%= contribution[j].title %> </a> 
+		<% } %>
+	</div>
+
+	<div class ="subscribed">
+	subscribed to: <br>
+		<% for(var k = 0; k < subscription.length; k++){ %>
+		<a href="/documents/<%= subscription[k].id %>"> <%= subscription[k].title %> </a> 
+		<% } %>
+	</div>
+
+<a href="/users"> see other members </a>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
