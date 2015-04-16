@@ -10,44 +10,33 @@
 
 	<div class ="authored">
 	wrote: <br>
-		<% for(var i = 0; i < authorship.length; i++){ %>
-		<a href="/documents/<%= authorship[i].id %>"> <%= authorship[i].title %> </a> on <%= authorship[i].created_at %>
-		<% } %>
+
+		<% authorship.forEach(function(key){ %> 
+			<a href="/documents/<%= key.id %>"> <%= key.title %> </a> on <%= key.created_at %>
+		<% }); %>
+
 	</div>
 
 	<div class ="contributed">
 	contributed to: <br>
-		<% for(var j = 0; j < contribution.length; j++){ %>
-		<a href="/documents/<%= contribution[j].id %>"> <%= contribution[j].title %> </a> 
-		<% } %>
+		<% contribution.forEach(function(key){ %> 
+		<a href="/documents/<%= key.id %>"> <%= key.title %> </a> 
+		<% }); %>
 	</div>
 
 	<div class ="subscribed">
 	subscribed to: <br>
-		<% for(var k = 0; k < subscription.length; k++){ %>
-		<a href="/documents/<%= subscription[k].id %>"> <%= subscription[k].title %> </a> 
-		<% } %>
+		<% subscription.forEach(function(key){ %> 
+		<a href="/documents/<%= key.id %>"> <%= key.title %> </a> 
+		<% }); %>
 	</div>
 
+	<!-- delete the user -->
+	<form method="POST" action="/users/<%= users.id %>?_method=DELETE">
+		<button>DELETE user</button>
+	</form>
+
 <a href="/users"> see other members </a>
-
-</body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 </body>
 </html>

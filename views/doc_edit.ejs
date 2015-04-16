@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <body>
 	<!-- update form -->
-	<h3>Update <%= document.name %> here:</h3>
+	<h3>Update <%= document.title %> here:</h3>
 	<form method="POST" action="/documents/<%= document.id %>?_method=PUT">
 		<input type="text" name="title" value="<%= document.title %>"><br>
 

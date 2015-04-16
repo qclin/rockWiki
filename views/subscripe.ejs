@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<body>
+	<!-- subscribe form -->
+	<h3>subscribe to <%= document.title %> here:</h3>
+	<form method="POST" action="/documents/<%= document.id %>">
+	<!-- choose subscriber id  -->
+
+	<select name ="user">
+		<option> select user </option>
+		<% Object.keys(users).forEach(function(key){ %>
+		<option value = "<%= users[key].id %>"> <%= users[key].name %></option>
+		<% }); %> 
+	</select>
+
+	<button>subscribe</button>
+	</form>
+</body>
