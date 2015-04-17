@@ -9,11 +9,18 @@
 	<h2> edit your profile </h2>
 
 	<form method = "POST" action = "/users/<%= user.id %>?_method=PUT" >
-
-		<input type ="text" name ="name" value = "<%= user.name %>">
+		<label>name: 
+			<input type ="text" name ="name" value = "<%= user.name %>">
+		</label>
+		<label>location: 
 		<input type ="text" name ="location" value = "<%= user.location %>">
+		</label>
+		<label>pitch: 
 		<input type ="text" name ="pitch" value = "<%= user.pitch %>">
+		</label>
+		<label>email: 
 		<input type ="text" name ="email_address" value = "<%= user.email_address %>">
+		</label>
 
 		<div class ="subscribed">
 			unsubscribed: <br>

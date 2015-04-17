@@ -3,6 +3,10 @@ var ejs = require('ejs');
 var sqlite3 = require('sqlite3').verbose();
 var bodyParser = require('body-parser');
 var methodOverride = require('method-Override'); 
+var marked = require('marked');
+
+//trying sendgrid npm
+var sendgrid  = require('sendgrid')("qclin", "wiki920lemon");
 
 var app = express(); 
 app.set('view engine', 'ejs');
@@ -42,6 +46,7 @@ app.get('/documents', function(req, res){
 		res.render('doc_index.ejs', {documents:rows});
 	});
 });
+
 // create new document, passing user info for author selections
 app.get('/documents/new', function(req, res){
 	
@@ -65,15 +70,14 @@ app.get("/documents/:id",function(req,res){
 //posting a new documents with filled content 
 app.post('/documents',function(req,res){
 	//this is where you would make any api request to insert in db
+	var markedBody = marked(req.body.content);
 	db.run("INSERT INTO documents (title, content, author_id, image, tags) VALUES (?,?,?,?,?)", req.body.title.toUpperCase(), req.body.content, req.body.author, req.body.image, req.body.tags, function(err){
 		if(err){throw err; }
-		res.redirect('/documents') /// too tireed . . . .
+		res.redirect('/documents') /// too tired . . . 
 	});
-
 });
 
 // render edit page for document update / 
-
 app.get('/documents/:id/edit',function(req,res){
 	var docID = parseInt(req.params.id);
 	db.get("SELECT * FROM documents where id = ?", docID, function(err, row){
@@ -84,11 +88,34 @@ app.get('/documents/:id/edit',function(req,res){
 	});
 });
 
-
 // update exiting page while inserting id into contribution table 
 app.put("/documents/:id", function(req,res){
 	var docID = parseInt(req.params.id);
 	var userID = req.body.user;
+	
+	// // sendgrid FIRE ~~!!! 
+	// var email = new sendgrid.Email({from:'admin@wikiRocks.com'});
+	// email.subject = req.body.title + "has been updated";
+	// db.get("SELECT email_address FROM users INNER JOIN documents ON users.id = documents.author_id WHERE documents.id = ?", docID, function(err,author){ if(err){ throw err; }
+	// 	email.to = author.email_address
+	
+	// 	db.all("SELECT email_address FROM users INNER JOIN subscription ON users.id = subscription.user_id WHERE subscription.document_id = ? ", docID, function(err,subscribers){ if(err){ throw err; }
+	// 		email.bcc = [];	
+	// 		for(var i = 0; i< subscribers.length; i++){
+	// 			email.bcc.push(subscribers[i].email_address);
+	// 		}
+	// 		db.get("SELECT * FROM users WHERE id = ?", userID, function(err, editor){ if(err){ throw err; }
+	// 			console.log(editor);
+	// 			email.text = editor.name + " of " + editor.location + " made the following changes " + req.body.edit_summary
+	
+	// 			sendgrid.send(email, function(err, json) {
+ //  						if (err) { return console.error(err); }
+ //  						console.log(json);
+	// 			});
+	// 		});
+	// 	});
+	// });
+
 	/// if requested any content, here would run request again for updates 
 	db.run("UPDATE documents SET title = ?, content = ?, image = ?, tags = ? WHERE id = ?", req.body.title.toUpperCase(), req.body.content, req.body.image, req.body.tags, docID, function(err){
 		if(err){ throw err; }
@@ -168,7 +195,6 @@ app.put("/users/:id", function(req,res){
 	});
 });
 
-
 // rendering contribution history log 
 app.get('/documents/:docID/contributions', function(req,res){
 	var docID = parseInt(req.params.docID);
@@ -190,8 +216,8 @@ app.get('/documents/:docID/subscribe',function(req, res){
 		});
 	});
 });
-// inserting into subscription table user/document data
 
+// inserting into subscription table user/document data
 app.post('/documents/:docID', function(req, res){ 
 	var docID = parseInt(req.params.docID);
 	db.run("INSERT INTO subscription (document_id, user_id) VALUES(?,?)", docID, req.body.user, function(err){
@@ -213,7 +239,6 @@ app.delete('/users/:id', function(req, res){
 		res.redirect('/users');
 	});
 });
-
 
 //rendering a UN-subscription page 
 app.get('/documents/:docID/unsubscribe',function(req, res){
