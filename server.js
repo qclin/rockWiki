@@ -3,6 +3,7 @@ var ejs = require('ejs');
 var sqlite3 = require('sqlite3').verbose();
 var bodyParser = require('body-parser');
 var methodOverride = require('method-Override'); 
+var request = require ('request');
 var marked = require('marked');
 marked.setOptions({
   renderer: new marked.Renderer(),
@@ -22,6 +23,13 @@ var app = express();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended:false})); 
 app.use(methodOverride('_method')); 
+
+// error handling --- not sure what it does 
+app.use(function(err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
 
 var db = new sqlite3.Database('./db/wiki.db'); 
 
@@ -119,7 +127,6 @@ app.put("/documents/:id", function(req,res){
 	// 			email.bcc.push(subscribers[i].email_address);
 	// 		}
 	// 		db.get("SELECT * FROM users WHERE id = ?", userID, function(err, editor){ if(err){ throw err; }
-	// 			console.log(editor);
 	// 			email.text = editor.name + " of " + editor.location + " made the following changes " + req.body.edit_summary
 
 	// 			sendgrid.send(email, function(err, json) {
@@ -274,6 +281,15 @@ app.delete('/documents/:id/unsubscribe', function(req,res){
 		res.redirect('/documents/'+docID);
 	});
 });
+
+app.get('*', function(req,res){
+	request('http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=lumpy+space+princess', function(err, response, body){if(err){ throw err; }
+		var giphy = JSON.parse(body).data.image_url; 
+	res.render("error.ejs",{giphy:giphy});
+	//res.send(400); 
+	});
+});
+
 
 app.listen(3000, function(){
 	console.log("listening on" +3000);
