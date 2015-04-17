@@ -1,7 +1,6 @@
 {
   "name": "projectWiki",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
   "dependencies": {
     "ejs": "^2.3.1",
