@@ -2,8 +2,9 @@ var express = require('express');
 var ejs = require('ejs');
 var sqlite3 = require('sqlite3').verbose();
 var bodyParser = require('body-parser');
-var methodOverride = require('method-Override'); 
+var methodOverride = require('method-override'); 
 var request = require ('request');
+var secrets = require('./secrets.json');
 var marked = require('marked');
 marked.setOptions({
   renderer: new marked.Renderer(),
@@ -78,7 +79,8 @@ app.get('/documents/new', function(req, res){
 app.get("/documents/:id",function(req,res){
 	var docID = parseInt(req.params.id); 
 	if(isNaN(docID)) {
-		res.send("Not found");
+		res.redirect('/*'); //redirect to LSP 
+		//res.redirect('/documents'); 
 	} else {
 		db.get("SELECT * FROM documents WHERE id = ?", docID, function(err, row){
 			if(err){ throw err; }
@@ -282,6 +284,7 @@ app.delete('/documents/:id/unsubscribe', function(req,res){
 	});
 });
 
+// error handling for all other routes // send Lumpy Space Princess 
 app.get('*', function(req,res){
 	request('http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=lumpy+space+princess', function(err, response, body){if(err){ throw err; }
 		var giphy = JSON.parse(body).data.image_url; 
@@ -290,10 +293,10 @@ app.get('*', function(req,res){
 	});
 });
 
-
-app.listen(80, function(){
-	console.log("listening on" +80);
+app.listen(secrets['port'], function(){
+	console.log("listening on " + secrets['port']);
 });
 
- 
+
+
 

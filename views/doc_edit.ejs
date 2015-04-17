@@ -8,7 +8,6 @@
 	<!-- choose contributor id  -->
 
 	<select name ="user" required>
-		<option> select user </option>
 		<% Object.keys(users).forEach(function(key){ %>
 		<option value = "<%= users[key].id %>"> <%= users[key].name %></option>
 		<% }); %> 
@@ -20,6 +19,7 @@
 		<option value = "igneous"> igneous </option>
 		<option value = "metamorphic"> metamorphic </option>
 		<option value = "sedimentary"> sedimentary </option>
+		<option value = "other"> other </option>
 	</select>
 
 		<input type="text" name ="image" value="<%= document.image %>"><br>
