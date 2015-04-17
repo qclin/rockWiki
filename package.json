@@ -3,13 +3,26 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "dependencies": {
+    "ejs": "^2.3.1",
+    "express": "^4.12.3",
+    "marked": "^0.3.3",
+    "request": "^2.55.0",
+    "sendgrid": "^1.6.1"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qclin/projectWiki.git"
+  },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "marked": "^0.3.3"
-  }
+  "bugs": {
+    "url": "https://github.com/qclin/projectWiki/issues"
+  },
+  "homepage": "https://github.com/qclin/projectWiki"
 }
