@@ -4,6 +4,16 @@ var sqlite3 = require('sqlite3').verbose();
 var bodyParser = require('body-parser');
 var methodOverride = require('method-Override'); 
 var marked = require('marked');
+marked.setOptions({
+  renderer: new marked.Renderer(),
+  gfm: true,
+  tables: true,
+  breaks: false,
+  pedantic: false,
+  sanitize: true,
+  smartLists: true,
+  smartypants: false
+});
 
 //trying sendgrid npm
 var sendgrid  = require('sendgrid')("qclin", "wiki920lemon");
@@ -59,18 +69,22 @@ app.get('/documents/new', function(req, res){
 // show the individual document 
 app.get("/documents/:id",function(req,res){
 	var docID = parseInt(req.params.id); 
-	db.get("SELECT * FROM documents WHERE id = ?", docID, function(err, row){
-		if(err){ throw err; }
-		db.get("SELECT users.id, users.name, users.location FROM users INNER JOIN documents ON users.id = documents.author_id WHERE documents.author_id =" + row.author_id, function(err, data){
-			res.render('doc_show.ejs', {document:row, author:data});
+	if(isNaN(docID)) {
+		res.send("Not found");
+	} else {
+		db.get("SELECT * FROM documents WHERE id = ?", docID, function(err, row){
+			if(err){ throw err; }
+			var markedBody = marked(row.content);
+			db.get("SELECT users.id, users.name, users.location FROM users INNER JOIN documents ON users.id = documents.author_id WHERE documents.author_id =" + row.author_id, function(err, data){
+				res.render('doc_show.ejs', {document:row, author:data, markedContent: markedBody});
+			});
 		});
-	});
+	}
 });
 	
 //posting a new documents with filled content 
 app.post('/documents',function(req,res){
 	//this is where you would make any api request to insert in db
-	var markedBody = marked(req.body.content);
 	db.run("INSERT INTO documents (title, content, author_id, image, tags) VALUES (?,?,?,?,?)", req.body.title.toUpperCase(), req.body.content, req.body.author, req.body.image, req.body.tags, function(err){
 		if(err){throw err; }
 		res.redirect('/documents') /// too tired . . . 
@@ -107,7 +121,7 @@ app.put("/documents/:id", function(req,res){
 	// 		db.get("SELECT * FROM users WHERE id = ?", userID, function(err, editor){ if(err){ throw err; }
 	// 			console.log(editor);
 	// 			email.text = editor.name + " of " + editor.location + " made the following changes " + req.body.edit_summary
-	
+
 	// 			sendgrid.send(email, function(err, json) {
  //  						if (err) { return console.error(err); }
  //  						console.log(json);
