@@ -249,6 +249,56 @@ app.post('/documents/:docID', function(req, res){
 	});
 }); 
 
+//rendering a talk page for article 
+app.get('/documents/:docID/talk', function(req, res){
+	var docID = parseInt(req.params.docID);
+	db.get("SELECT * FROM documents WHERE id = ?", docID, function(err, doc){
+		if(err){ throw err; }
+		db.all("SELECT * FROM users", function(err,users){
+			if(err){ throw err; }
+			db.all("SELECT * FROM talk WHERE document_id = ?", docID, function (err, talks){
+				console.log(talks);
+				if(err){ throw err; }
+				res.render('talk.ejs', {doc: doc, users: users, talks: talks});
+			});
+		});
+	});
+});
+
+// posting parent comments into talk 
+app.post('/documents/:docID/talk/start', function(req,res){
+	var docID = parseInt(req.params.docID); 
+	db.run("INSERT INTO talk (document_id, user_id, note) VALUES (?,?,?)", docID, req.body.user, req.body.note, function(err){ if(err){ throw err ;}
+		res.redirect('/documents/'+docID+"/talk");
+	});
+});
+
+// rendering a reply to current talk 
+app.get('/documents/:docID/talk/:talkID/new', function(req,res){
+	var docID = parseInt(req.params.docID);
+	var talkID = parseInt(req.params.talkID);
+	db.get('SELECT * FROM documents WHERE id = ?', docID, function(err, doc){
+		db.get('SELECT * FROM talk WHERE talk.id = ?', talkID, function(err, data){ 
+			if(err){ throw err; }
+			console.log(data);
+			db.all("SELECT * FROM users;", function(err, rows){
+				if(err){ throw err; }
+				res.render("talk_new.ejs", {doc: doc, talk:data, users:rows});
+			});
+		});
+	});
+});
+
+// posting child comment into talk 
+/// works but diplay is still uniform . . . maybe css styling  will give needed indentation 
+app.post('/documents/:docID/talk/:noteID/talk', function(req,res){
+	var docID = parseInt(req.params.docID); 
+	var parentID = parseInt(req.params.noteID);
+	db.run("INSERT INTO talk (document_id, user_id, note, parent_id) VALUES (?,?,?,?)", docID, req.body.talker, req.body.note, parentID, function(err){ if(err){ throw err ;}
+		res.redirect('/documents/'+docID+"/talk");
+	});
+});
+
 // deleting a document 
 app.delete('/documents/:id', function(req,res){
 	db.run('DELETE FROM documents WHERE id =' +parseInt(req.params.id), function(err){

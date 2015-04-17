@@ -10,6 +10,7 @@
 
 	<p> last updated <%= document.updated_at %></p>
 	<a href='/documents/<%= document.id %>/contributions'> see history </a><br>
+	<a href='/documents/<%= document.id %>/talk'> talk </a><br>
 
 	<img src="<%=document.image %>" width = "auto" height = "300px" style = "float:right" >
 	  <%- markedContent %>

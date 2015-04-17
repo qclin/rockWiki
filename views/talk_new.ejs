@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<%= users[talk.user_id-1].name %> : <%= talk.note %> @ <%= talk.updated_at %> <br><br><br>
+	
+  	<form method="POST" action="/documents/<%= doc.id %>/talk/<%=talk.id %>/talk">
+		<!-- choose talk id  -->
+		<select name ="talker" required>
+			<option> select talker </option>
+			<% Object.keys(users).forEach(function(key){ %>
+			<option value = "<%= users[key].id %>"> <%= users[key].name %></option>
+			<% }); %> 
+		</select><br>
+		<br><textarea name="note" placeholder = "join the talk" rows="10" cols="60" required></textarea><br>
+
+		<button>talk</button>
+	</form>
+
+
+</body>
+</html>
