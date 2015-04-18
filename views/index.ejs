@@ -32,15 +32,27 @@
 <ul>
 <% Object.keys(act).forEach(function(key){ %>
 
-<% if(act[key].user_id === null){ %> 
-	<%= act[key].event%> <%= doc[act[key].document_id].title %> <%= act[key].created_at %> 
-<% }else if(act[key].document_id === null){ %>
-	<%= user[act[key].user_id].name %><%= act[key].event%><%= act[key].created_at %> 
-<% }else{ %>
-	<%= user[act[key].user_id].name %><%= act[key].event%> <%= doc[act[key].document_id].title %> <%= act[key].created_at %> 
-<% } %>
+	<!-- glitch here: if user or document was deleted . . . name and title doesn't show  -->
+	<% if(act[key].user_id && act[key].document_id) { %>
+		<a href= "/users/<%= act[key].user_id %>"><%= act[key].name %></a> 
+		<%= act[key].event%>
+		<a href= "/documents/<%= act[key].document_id %>"><%= act[key].title %></a> <%= act[key].created_at %><br>
 
-	<% }); %>
-		</ul>
+	<% }else if(act[key].user_id === null ){ %> 
+
+		<a href= "/documents/<%= act[key].document_id %>"><%= act[key].title%> </a>
+		<%= act[key].event%> <%= act[key].created_at %> <br>
+
+	<% }else if(act[key].document_id === null ){ %>
+
+		<a href= "/users/<%= act[key].user_id %>"><%= act[key].name %></a>
+		<%= act[key].event%> <%= act[key].created_at %> <br>
+		
+	<% }else{ %>
+			<%= act[key].name %></a> <%= act[key].event%> <%= act[key].title%> </a> <%= act[key].created_at %> <br>
+		<% } %>
+<% }); %>
+</ul>
+
 </body>
 </html>
