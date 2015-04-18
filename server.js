@@ -35,16 +35,26 @@ app.use(function(err, req, res, next) {
 var db = new sqlite3.Database('./db/wiki.db'); 
 
 app.get('/', function(req,res){
-	db.all("SELECT * FROM documents;", function(err, rows){
+	// try inner join user name and document title for recent activity
+	db.all("SELECT documents.title FROM activity INNER JOIN documents ON documents.id = activity.document_id WHERE activity.updated_at >= datetime('now','-1 day') ORDER BY activity.updated_at DESC;", function(err, doc){
 		if(err){ throw err; }
-		db.all("SELECT * FROM users;", function(err, data){
-			if(err){ throw err; }
-			db.all("SELECT * FROM activity WHERE updated_at >= datetime('now','-1 day') ORDER BY updated_at DESC;", function(err, info){
-				if(err){ throw err; }
-				console.log(info);
-			res.render('index.ejs', {doc:rows, user:data, act:info});
-			});
-		});
+		console.log(doc);
+	db.all("SELECT activity.event, activity.created_at, users.name FROM activity INNER JOIN users ON users.ID = activity.user_id WHERE activity.updated_at >= datetime('now','-1 day') ORDER BY activity.updated_at DESC;", function(err, user){
+		if(err){ throw err; }
+		//console.log(user);
+
+	db.all("SELECT activity.event, activity.created_at, users.name, documents.title FROM activity INNER JOIN users ON users.ID = activity.user_id INNER JOIN documents ON documents.id = activity.document_id WHERE activity.updated_at >= datetime('now','-1 day') ORDER BY activity.updated_at DESC;", function(err, all){
+		if(err){ throw err; }
+		//console.log(all);
+
+
+	db.all("SELECT * FROM activity WHERE updated_at >= datetime('now','-1 day') ORDER BY updated_at DESC;", function(err, info){
+		if(err){ throw err; }
+		//console.log(info);
+	res.render('index.ejs', {act:info});
+	});
+	});
+	});
 	});
 });
 
