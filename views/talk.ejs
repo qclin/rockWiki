@@ -14,7 +14,7 @@
 
 		<% Object.keys(talks).forEach(function(key){ %>	
 
-		<!-- figure out how to display childen comments in parents, if tallks[key].parent_id is true . . . diplay as sub-commentary to the parent comment   -->
+		<!-- figure out how to display childen comments in parents, if(tallks[key].parent_id != null). . . diplay as sub-commentary to the parent comment  -->
 		<div class ="talk">
 			<%= users[talks[key].user_id-1].name %> : <%= talks[key].note %> @ <%= talks[key].updated_at %> <br>
 			<a href = '/documents/<%=doc.id %>/talk/<%=talks[key].id%>/new'>reply</a>

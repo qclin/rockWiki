@@ -37,7 +37,14 @@ var db = new sqlite3.Database('./db/wiki.db');
 app.get('/', function(req,res){
 	db.all("SELECT * FROM documents;", function(err, rows){
 		if(err){ throw err; }
-		res.render('index.ejs', {documents:rows});
+		db.all("SELECT * FROM users;", function(err, data){
+			if(err){ throw err; }
+			db.all("SELECT * FROM activity WHERE updated_at >= datetime('now','-1 day') ORDER BY updated_at DESC;", function(err, info){
+				if(err){ throw err; }
+				console.log(info);
+			res.render('index.ejs', {doc:rows, user:data, act:info});
+			});
+		});
 	});
 });
 
@@ -86,6 +93,7 @@ app.get("/documents/:id",function(req,res){
 			if(err){ throw err; }
 			var markedBody = marked(row.content);
 			db.get("SELECT users.id, users.name, users.location FROM users INNER JOIN documents ON users.id = documents.author_id WHERE documents.author_id =" + row.author_id, function(err, data){
+				console.log(data);
 				res.render('doc_show.ejs', {document:row, author:data, markedContent: markedBody});
 			});
 		});
@@ -98,6 +106,10 @@ app.post('/documents',function(req,res){
 	db.run("INSERT INTO documents (title, content, author_id, image, tags) VALUES (?,?,?,?,?)", req.body.title.toUpperCase(), req.body.content, req.body.author, req.body.image, req.body.tags, function(err){
 		if(err){throw err; }
 		res.redirect('/documents') /// too tired . . . 
+		//logging activity into recent log 
+		db.run("INSERT INTO activity (document_id, user_id, event) VALUES (?,?,?)", this.lastID, req.body.author, "created",function(err){
+			if (err){throw err;}
+		});
 	});
 });
 
@@ -147,6 +159,10 @@ app.put("/documents/:id", function(req,res){
 			res.redirect('/documents/' + docID);
 		});
 	});
+	//logging activity into recent log 
+	db.run("INSERT INTO activity (document_id, user_id, event) VALUES (?,?,?)", docID, userID, "contributed",function(err){
+		if (err){throw err;}
+	});
 });
 
 // rendering list of existing users 
@@ -188,6 +204,10 @@ app.post('/users',function(req,res){
 	db.run("INSERT INTO users (name, location, email_address) VALUES (?,?,?)", req.body.name, req.body.location, req.body.email_address, function(err){
 		if(err){throw err; }
 		res.redirect('/users');
+		//logging activity into recent log 
+		db.run("INSERT INTO activity (user_id, event) VALUES (?,?)", this.lastID, "registered",function(err){
+			if (err){throw err;}
+		});
 	});
 });
 
@@ -215,6 +235,10 @@ app.put("/users/:id", function(req,res){
 			if(err){ throw err; }
 			res.redirect('/users/' + userID);
 		});
+	});
+	//logging activity into recent log 
+	db.run("INSERT INTO activity (user_id, event) VALUES (?,?)", userID, "updated",function(err){
+		if (err){throw err;}
 	});
 });
 
@@ -247,6 +271,10 @@ app.post('/documents/:docID', function(req, res){
 		if(err){ throw err; }
 		res.redirect('/documents/'+ docID);
 	});
+	//logging activity into recent log 
+	db.run("INSERT INTO activity (document_id, user_id, event) VALUES (?,?,?)", docID, req.body.user, "subscribed",function(err){
+		if (err){throw err;}
+	});
 }); 
 
 //rendering a talk page for article 
@@ -270,6 +298,10 @@ app.post('/documents/:docID/talk/start', function(req,res){
 	var docID = parseInt(req.params.docID); 
 	db.run("INSERT INTO talk (document_id, user_id, note) VALUES (?,?,?)", docID, req.body.user, req.body.note, function(err){ if(err){ throw err ;}
 		res.redirect('/documents/'+docID+"/talk");
+	});
+	//logging activity into recent log 
+	db.run("INSERT INTO activity (document_id, user_id, event) VALUES (?,?,?)", docID, req.body.user, "talked",function(err){
+		if (err){throw err;}
 	});
 });
 
@@ -301,15 +333,25 @@ app.post('/documents/:docID/talk/:noteID/talk', function(req,res){
 
 // deleting a document 
 app.delete('/documents/:id', function(req,res){
-	db.run('DELETE FROM documents WHERE id =' +parseInt(req.params.id), function(err){
+	var docID = parseInt(req.params.docID); 
+	db.run('DELETE FROM documents WHERE id =' + docID, function(err){
 		res.redirect('/documents');
+	});
+	//logging activity into recent log 
+	db.run("INSERT INTO activity (document_id, event) VALUES (?,?)", docID, "deleted",function(err){
+		if (err){throw err;}
 	});
 });
 
 //deleting a user 
 app.delete('/users/:id', function(req, res){
-	db.run('DELETE FROM users WHERE id ='+parseInt(req.params.id), function(err){
+	var userID = parseInt(req.params.id)
+	db.run('DELETE FROM users WHERE id ='+ userID, function(err){
 		res.redirect('/users');
+	});
+	//logging activity into recent log 
+	db.run("INSERT INTO activity (user_id, event) VALUES (?,?)", userID, "deleted",function(err){
+		if (err){throw err;}
 	});
 });
 
@@ -329,8 +371,13 @@ app.get('/documents/:docID/unsubscribe',function(req, res){
 //unsubscribing 
 app.delete('/documents/:id/unsubscribe', function(req,res){
 	var docID = parseInt(req.params.id);
-	db.run('DELETE FROM subscription WHERE user_id ='+parseInt(req.body.user), function(err){
+	var userID= req.body.user
+	db.run('DELETE FROM subscription WHERE user_id ='+ userID, function(err){
 		res.redirect('/documents/'+docID);
+	});
+	//logging activity into recent log 
+	db.run("INSERT INTO activity (document_id, user_id, event) VALUES (?,?,?)", docID, userID, "unsubscribed",function(err){
+		if (err){throw err;}
 	});
 });
 

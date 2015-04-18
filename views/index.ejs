@@ -20,11 +20,27 @@
 
 	<a href="/documents"> documents </a><br>
 	<a href="/users"> people</a><br>
+
 	<div class = "tags" >
 	<a href ="/tags/igneous"> igneous </a>
 	<a href ="/tags/metamorphic"> metamorphic </a>
 	<a href ="/tags/sedimentary"> sedimentary </a>
 	<a href ="/tags/other"> other </a>
 	</div>
+
+	<h2> recent activities </h2>
+<ul>
+<% Object.keys(act).forEach(function(key){ %>
+
+<% if(act[key].user_id === null){ %> 
+	<%= act[key].event%> <%= doc[act[key].document_id].title %> <%= act[key].created_at %> 
+<% }else if(act[key].document_id === null){ %>
+	<%= user[act[key].user_id].name %><%= act[key].event%><%= act[key].created_at %> 
+<% }else{ %>
+	<%= user[act[key].user_id].name %><%= act[key].event%> <%= doc[act[key].document_id].title %> <%= act[key].created_at %> 
+<% } %>
+
+	<% }); %>
+		</ul>
 </body>
 </html>
