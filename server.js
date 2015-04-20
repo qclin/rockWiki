@@ -135,27 +135,27 @@ app.put("/documents/:id", function(req,res){
 	// db.get('SELECT * FROM documents WHERE title LIKE ', %[[ ]]% )
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	// // sendgrid FIRE ~~!!! 
-	// var email = new sendgrid.Email({from:'admin@wikiRocks.com'});
-	// email.subject = req.body.title + " has been updated ";
-	// db.get("SELECT email_address FROM users INNER JOIN documents ON users.id = documents.author_id WHERE documents.id = ?", docID, function(err,author){ if(err){ throw err; }
-	// 	email.to = author.email_address
+	// sendgrid FIRE ~~!!! 
+	var email = new sendgrid.Email({from:'admin@wikiRocks.com'});
+	email.subject = req.body.title + " has been updated ";
+	db.get("SELECT email_address FROM users INNER JOIN documents ON users.id = documents.author_id WHERE documents.id = ?", docID, function(err,author){ if(err){ throw err; }
+		email.to = author.email_address
 	
-	// 	db.all("SELECT email_address FROM users INNER JOIN subscription ON users.id = subscription.user_id WHERE subscription.document_id = ? ", docID, function(err,subscribers){ if(err){ throw err; }
-	// 		email.bcc = [];	
-	// 		for(var i = 0; i< subscribers.length; i++){
-	// 			email.bcc.push(subscribers[i].email_address);
-	// 		}
-	// 		db.get("SELECT * FROM users WHERE id = ?", userID, function(err, editor){ if(err){ throw err; }
-	// 			email.text = editor.name + " of " + editor.location + " made the following changes: " + req.body.edit_summary
+		db.all("SELECT email_address FROM users INNER JOIN subscription ON users.id = subscription.user_id WHERE subscription.document_id = ? ", docID, function(err,subscribers){ if(err){ throw err; }
+			email.bcc = [];	
+			for(var i = 0; i< subscribers.length; i++){
+				email.bcc.push(subscribers[i].email_address);
+			}
+			db.get("SELECT * FROM users WHERE id = ?", userID, function(err, editor){ if(err){ throw err; }
+				email.text = editor.name + " of " + editor.location + " made the following changes: " + req.body.edit_summary
 
-	// 			sendgrid.send(email, function(err, json) {
- //  						if (err) { return console.error(err); }
- //  						console.log(json);
-	// 			});
-	// 		});
-	// 	});
-	// });
+				sendgrid.send(email, function(err, json) {
+  						if (err) { return console.error(err); }
+  						console.log(json);
+				});
+			});
+		});
+	});
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	//// jsdiff 
 	db.get("SELECT * FROM documents where id = ?", docID, function(err, oldDoc){
