@@ -2,21 +2,38 @@
 
 <html>
 <head> 
-	<title> new </title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/style.css" href='http://fonts.googleapis.com/css?family=Lato'>
+	<title>new user</title>
+	
 </head> 
 <body> 
-	<!-- assign lastest id to new user -->
-	<h2> welcome </h2>
+	<% include partials/top %>
 
+	<!-- assign lastest id to new user -->
+	<h2> hey you there: </h2><br><br>
+	<div class="edit">
 	<form method = "POST" action = "/users" >
-		<input type ="text" name ="name" placeholder ="user_name">
-		<input type ="text" name ="location" placeholder = "current location">
-		<input type ="text" name ="pitch" placeholder = "pitch yoself">
-		<input type ="text" name ="email_address" placeholder = "email address">
+	<fieldset>
+		<legend> new profile:</legend>
+		<label for="name">name: 
+		<input type ="text" name ="name" id= "name" placeholder ="user_name">
+		</label>
+		<label for="location">location: 
+		<input type ="text" name ="location" id ="location" placeholder = "current location">
+		</label>
+		<label for="pitch">pitch: 
+		<input type ="text" name ="pitch" id="pitch" placeholder = "pitch yoself">
+		</label>
+		<label for="email" >email: 
+		<input type ="text" name ="email_address" id="email" placeholder = "email address">
+		</label><br>
 
 		<button> submit </button>
+	</fieldset>
 	</form> 
-
+	</div>
+<br><br>
 <a href="/users"> see all contributors </a>
 </body>
 </html>

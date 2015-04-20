@@ -3,7 +3,7 @@
 	<!-- unsubscribe form -->
 	<h1> are you sure you want to do this?  </h1>
 	<h3>unsubscribe to <%= document.title %> here:</h3>
-
+	<img src= "<%= giphy %>" height ="300px" width ="auto"></br>
 	<form method="POST" action="/documents/<%= document.id %>/unsubscribe?_method=DELETE">
 	<!-- choose subscriber id  -->
 	<select name ="user">

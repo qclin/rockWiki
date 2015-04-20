@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/style.css">
+	<title>talk talk</title>
 </head>
 <body>
-	<%= users[talk.user_id-1].name %> : <%= talk.note %> @ <%= talk.updated_at %> <br><br><br>
+	<% include partials/top %>
+
+
+	<a href = '/users/<%= talk.user_id %>'> <%= talk.name %> </a>: <%= talk.note %><br> @ <%= talk.updated_at %> <br><br><br>
 	
-  	<form method="POST" action="/documents/<%= doc.id %>/talk/<%=talk.id %>/talk">
+  	<form method="POST" action="/documents/<%= doc.id %>/talk/<%=talk.talk_id %>/talk">
 		<!-- choose talk id  -->
 		<select name ="talker" required>
 			<option> select talker </option>

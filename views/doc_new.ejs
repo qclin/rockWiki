@@ -1,16 +1,21 @@
 <!DOCTYPE html> 
-<head> 
-	<title> new </title>
-</head> 
-<body> 
+<head>
 
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/style.css" href='http://fonts.googleapis.com/css?family=Lato'>
+	<title>new document</title>
+
+</head>
+<body> 
+<% include partials/top %>
 <!-- register new user  -->
 <a href = "/users/new"> must register to write</a>
 
-<h2> write a new entry </h2> 
-
+<br>
+<br>
 <form method = "POST" action = "/documents" >
-
+	<fieldset>
+	<legend>write a new entry</legend>
 	<input type ="text" name = "title" placeholder ="title" required><br>
 
 	<!-- author select -dropdown from user's table -->
@@ -31,14 +36,16 @@
 	</select>
 	<!-- wiki contents -->
 	<input type="text" name ="image" placeholder = "image url"><br>
-
+	<div class = "place">
+	<img src ="http://lorempixel.com/g/600/100/">
+	</div>
 	<textarea name="content" placeholder = "write wiki content" rows="30" cols="60" ></textarea><br>
-
-
-
 	<button> submit </button>
+	</fieldset>
 </form> 
 
+<br>
+<br>
 <a href = "/documents"> nevermind, see existing documents</a>
 
 </body>

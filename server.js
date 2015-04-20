@@ -24,6 +24,7 @@ var app = express();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended:false})); 
 app.use(methodOverride('_method')); 
+app.use(express.static(__dirname+"/public"));
 
 // error handling --- not sure what it does 
 app.use(function(err, req, res, next) {
@@ -48,12 +49,24 @@ app.get('/', function(req,res){
 
 // redirecting search to document page 
 app.get('/documents/search', function(req, res){
-	db.get("SELECT id FROM documents WHERE title = ?", req.query.title.toUpperCase(), function (err, data){
+	// regular expression need to remove excess space 
+	db.get("SELECT id FROM documents WHERE title = ? ",req.query.title.toUpperCase(), function (err, data){
 		if(err){throw err;}
 		res.redirect('/documents/' + data.id);
 	});
 });
-
+// redirect search key to a page with a list of articles 
+app.get('/documents/searchkey', function(req, res){
+	// regular expression need to remove excess space 
+	db.all("SELECT * FROM documents WHERE content LIKE '%"+ req.query.key+"%' OR title LIKE '%"+ req.query.key+"%'", function (err, data){
+		if(err){throw err;}
+		// if nothing is found 
+		request('http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=corgi', function(err, response, body){if(err){ throw err; }
+			var giphy = JSON.parse(body).data.image_url; 
+		res.render('search.ejs', {search:data, notfound:giphy});
+		});
+	});
+});
 // render pages base off of tags 
 app.get('/tags/:type', function(req, res){
 	var type = req.params.type
@@ -83,7 +96,7 @@ app.get('/documents/new', function(req, res){
 // show the individual document 
 app.get("/documents/:id",function(req,res){
 	var docID = parseInt(req.params.id); 
-	if(isNaN(docID)) {
+	if( isNaN(docID)) {
 		res.redirect('/*'); //redirect to LSP 
 		//res.redirect('/documents'); 
 	} else {
@@ -128,7 +141,7 @@ app.put("/documents/:id", function(req,res){
 	
 	// // sendgrid FIRE ~~!!! 
 	// var email = new sendgrid.Email({from:'admin@wikiRocks.com'});
-	// email.subject = req.body.title + "has been updated";
+	// email.subject = req.body.title + " has been updated ";
 	// db.get("SELECT email_address FROM users INNER JOIN documents ON users.id = documents.author_id WHERE documents.id = ?", docID, function(err,author){ if(err){ throw err; }
 	// 	email.to = author.email_address
 	
@@ -138,7 +151,7 @@ app.put("/documents/:id", function(req,res){
 	// 			email.bcc.push(subscribers[i].email_address);
 	// 		}
 	// 		db.get("SELECT * FROM users WHERE id = ?", userID, function(err, editor){ if(err){ throw err; }
-	// 			email.text = editor.name + " of " + editor.location + " made the following changes " + req.body.edit_summary
+	// 			email.text = editor.name + " of " + editor.location + " made the following changes: " + req.body.edit_summary
 
 	// 			sendgrid.send(email, function(err, json) {
  //  						if (err) { return console.error(err); }
@@ -227,7 +240,7 @@ app.put("/users/:id", function(req,res){
 
 	db.run("UPDATE users SET name = ?, location = ?, pitch = ?, email_address = ? WHERE id = ?", req.body.name, req.body.location, req.body.pitch, req.body.email_address, userID, function(err){
 		if(err){ throw err; }
-		// probably not viable 
+		// totally viable 
 		db.run("DELETE FROM subscription WHERE user_id = ? AND document_id = ? ", userID, docID, function(err){ 
 			if(err){ throw err; }
 			res.redirect('/users/' + userID);
@@ -256,9 +269,12 @@ app.get('/documents/:docID/subscribe',function(req, res){
 	// how to find who's not on the subscription list 
 	db.all("SELECT users.id, users.name FROM users WHERE users.id NOT IN (SELECT user_id FROM subscription WHERE document_id = " +docID+")", function(err, notsubscribed){
 		if(err){ throw err; }
-		res.render('subscribe.ejs', {document: row, users:notsubscribed});
+		request('http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=yes', function(err, response, body){if(err){ throw err; }
+		var giphy = JSON.parse(body).data.image_url; 
+		res.render('subscribe.ejs', {document: row, users:notsubscribed, giphy:giphy});
 		});
 	});
+});
 });
 
 // inserting into subscription table user/document data
@@ -279,12 +295,12 @@ app.get('/documents/:docID/talk', function(req, res){
 	var docID = parseInt(req.params.docID);
 	db.get("SELECT * FROM documents WHERE id = ?", docID, function(err, doc){
 		if(err){ throw err; }
+		// inner join talk with user 
 		db.all("SELECT * FROM users", function(err,users){
 			if(err){ throw err; }
-			db.all("SELECT * FROM talk WHERE document_id = ?", docID, function (err, talks){
-				console.log(talks);
+			db.all("SELECT * FROM talk INNER JOIN users ON talk.user_id = users.id WHERE document_id = ?", docID, function (err, talks){
 				if(err){ throw err; }
-				res.render('talk.ejs', {doc: doc, users: users, talks: talks});
+				res.render('talk.ejs', {doc: doc, users:users, talks: talks});
 			});
 		});
 	});
@@ -302,14 +318,15 @@ app.post('/documents/:docID/talk/start', function(req,res){
 	});
 });
 
+
 // rendering a reply to current talk 
 app.get('/documents/:docID/talk/:talkID/new', function(req,res){
 	var docID = parseInt(req.params.docID);
 	var talkID = parseInt(req.params.talkID);
 	db.get('SELECT * FROM documents WHERE id = ?', docID, function(err, doc){
-		db.get('SELECT * FROM talk WHERE talk.id = ?', talkID, function(err, data){ 
-			if(err){ throw err; }
-			console.log(data);
+
+		db.get('SELECT * FROM talk INNER JOIN users ON talk.user_id = users.id WHERE talk.talk_id = ?', talkID, function(err, data){ 
+			if(err){ console.log(err);}
 			db.all("SELECT * FROM users;", function(err, rows){
 				if(err){ throw err; }
 				res.render("talk_new.ejs", {doc: doc, talk:data, users:rows});
@@ -320,18 +337,45 @@ app.get('/documents/:docID/talk/:talkID/new', function(req,res){
 
 // posting child comment into talk 
 /// works but diplay is still uniform . . . maybe css styling  will give needed indentation 
-app.post('/documents/:docID/talk/:noteID/talk', function(req,res){
+app.post('/documents/:docID/talk/:talkID/talk', function(req,res){
 	var docID = parseInt(req.params.docID); 
-	var parentID = parseInt(req.params.noteID);
+	var parentID = parseInt(req.params.talkID);
 	db.run("INSERT INTO talk (document_id, user_id, note, parent_id) VALUES (?,?,?,?)", docID, req.body.talker, req.body.note, parentID, function(err){ if(err){ throw err ;}
 		res.redirect('/documents/'+docID+"/talk");
 	});
 });
 
+// render edit page for document update / 
+app.get('/documents/:docID/talk/:talkID/edit',function(req,res){
+	var docID = parseInt(req.params.docID);
+	var talkID = parseInt(req.params.talkID);
+	db.get("SELECT * FROM documents WHERE id = ?", docID, function (err,data){
+		if(err){ throw err; }
+	db.get("SELECT * FROM talk INNER JOIN users ON talk.user_id = users.id WHERE talk_id = ?", talkID, function(err, row){
+		if(err){ throw err; }
+		res.render('talk_edit.ejs', {talk:row, document:data});
+		});
+	});
+});
+
+// update comments 
+
+app.put('/documents/:docId/talk/:talkId', function(req,res){
+	var docID = parseInt(req.params.docId);
+	var talkID = parseInt(req.params.talkId);
+	db.run("UPDATE talk SET note = ? WHERE talk_id = ?", req.body.note, talkID, function(err){
+		if(err){
+			throw err; 
+		}
+				res.redirect('/documents/'+ docID + '/talk');
+	});
+});
+
 // deleting a document 
 app.delete('/documents/:id', function(req,res){
-	var docID = parseInt(req.params.docID); 
-	db.run('DELETE FROM documents WHERE id =' + docID, function(err){
+	var docID = parseInt(req.params.id); 
+	db.run('DELETE FROM documents WHERE id = ?', docID, function(err){
+		console.log(err);
 		res.redirect('/documents');
 	});
 	//logging activity into recent log 
@@ -342,7 +386,7 @@ app.delete('/documents/:id', function(req,res){
 
 //deleting a user 
 app.delete('/users/:id', function(req, res){
-	var userID = parseInt(req.params.id)
+	var userID = parseInt(req.params.id);
 	db.run('DELETE FROM users WHERE id ='+ userID, function(err){
 		res.redirect('/users');
 	});
@@ -360,10 +404,15 @@ app.get('/documents/:docID/unsubscribe',function(req, res){
 	// search subscription to see who's already subscribe 
 		db.all("SELECT users.id, users.name FROM users INNER JOIN subscription ON users.id = subscription.user_id WHERE subscription.document_id = " +docID, function(err, subscribed){
 				if(err){ throw err; }
-		res.render('unsubscribe.ejs', {document: row, users:subscribed});
+		request('http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=flip+table', function(err, response, body){if(err){ throw err; }
+		var giphy = JSON.parse(body).data.image_url; 
+		res.render('unsubscribe.ejs', {document: row, users:subscribed, giphy:giphy});
+		});
 		});
 	});
 });
+
+
 
 //unsubscribing 
 app.delete('/documents/:id/unsubscribe', function(req,res){

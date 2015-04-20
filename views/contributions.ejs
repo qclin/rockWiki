@@ -1,9 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/style.css" href='http://fonts.googleapis.com/css?family=Lato'>
+	<title>contribution</title>
+
 </head>
 <body>
+
+	<% include partials/top %>
+
+	<% if(contribution.length === 0){ %>
+
+		<h1> looks like a fresh field; Go head plow away~!  </h1>
+
+	<% }else{ %>
+	<h2> recent contributions: </h2>
 	<div class = "list">
 	<% for(var i = 0; i < contribution.length; i++){ %>
 		<p> <%= contribution[i].updated_at %>
@@ -11,6 +23,6 @@
 		<%= contribution[i].edit_summary %> </p> 
 	<% } %>
 	</div>
-
+	<% } %>
 </body>
 </html>

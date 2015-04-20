@@ -1,41 +1,50 @@
 <!DOCTYPE html>
 <head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/style.css">
+	<title>talk</title>
 </head>
 
 <body>
 	<!-- TALK TALK TALK  -->
-	<h3> <%= doc.title %> </h3>
+	<% include partials/top %>
+
+	<h1> <%= doc.title %> </h1>
 
 	<% if(talks.length === 0){ %>
 
 		<p> start the conversation </p>
 
 	<% }else{ %>
-
+		<div class ="leftchunk">
 		<% Object.keys(talks).forEach(function(key){ %>	
 
 		<!-- figure out how to display childen comments in parents, if(tallks[key].parent_id != null). . . diplay as sub-commentary to the parent comment  -->
-		<div class ="talk">
-			<%= users[talks[key].user_id-1].name %> : <%= talks[key].note %> @ <%= talks[key].updated_at %> <br>
-			<a href = '/documents/<%=doc.id %>/talk/<%=talks[key].id%>/new'>reply</a>
-		</div>
+			<li>
+			<a href = '/users/<%= talks[key].user_id %>'> <%= talks[key].name %> </a> : <%= talks[key].note %> @ <%= talks[key].updated_at.substring(11,20); %>
+			<a href = '/documents/<%=doc.id %>/talk/<%=talks[key].talk_id%>/new'>reply | </a>
+			<a href = '/documents/<%=doc.id %>/talk/<%=talks[key].talk_id%>/edit'>edit</a><br>
+			</li>
+		<% });} %>
+		
 
-	<% });} %>
-	<br><br><br>
-	-------------------------------------------------------------------------
 	<br><br>
 	<!-- new comments  -->
 	<form method="POST" action="/documents/<%= doc.id %>/talk/start">
+		<fieldset>
+		<legend>new topics</legend>
 		<!-- choose talk id  -->
 		<select name ="user" required>
 			<option> select user </option>
 			<% Object.keys(users).forEach(function(key){ %>
 			<option value = "<%= users[key].id %>"> <%= users[key].name %></option>
 			<% }); %> 
-		</select><br>
-		<br><textarea name="note" placeholder = "join the talk" rows="10" cols="60" required></textarea><br>
+		</select>
+		<textarea name="note" id="comment" placeholder = "join the talk"required></textarea><br>
 
 		<button>talk</button>
+		</fieldset>
 	</form>
+	</div>
 </body>
 </html>

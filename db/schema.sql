@@ -48,32 +48,32 @@
 --   UPDATE subscription SET updated_at = CURRENT_TIMESTAMP WHERE id = new.id;
 -- END;
 
--- DROP TABLE IF EXISTS talk; 
--- CREATE TABLE talk(
--- id INTEGER PRIMARY KEY AUTOINCREMENT,
--- document_id INTEGER,
--- user_id INTEGER,
--- note TEXT,
--- parent_id INTEGER, 
--- childen [],
--- created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
--- updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
--- );
-
--- CREATE TRIGGER talkTime_update BEFORE UPDATE ON talk BEGIN
--- UPDATE talk SET updated_at = CURRENT_TIMESTAMP WHERE id = new.id;
--- END;
-
-DROP TABLE IF EXISTS activity; 
-CREATE TABLE activity(
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	document_id INTEGER,
-	user_id INTEGER,
-	event TEXT, 
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+DROP TABLE IF EXISTS talk; 
+CREATE TABLE talk(
+talk_id INTEGER PRIMARY KEY AUTOINCREMENT,
+document_id INTEGER,
+user_id INTEGER,
+note TEXT,
+parent_id INTEGER, 
+childen [],
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-CREATE TRIGGER recent_update BEFORE UPDATE ON activity BEGIN
-UPDATE activity SET updated_at = CURRENT_TIMESTAMP WHERE id = new.id;
+
+CREATE TRIGGER talkTime_update BEFORE UPDATE ON talk BEGIN
+UPDATE talk SET updated_at = CURRENT_TIMESTAMP WHERE id = new.id;
 END;
+
+-- DROP TABLE IF EXISTS activity; 
+-- CREATE TABLE activity(
+-- 	id INTEGER PRIMARY KEY AUTOINCREMENT,
+-- 	document_id INTEGER,
+-- 	user_id INTEGER,
+-- 	event TEXT, 
+-- 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+-- 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- );
+-- CREATE TRIGGER recent_update BEFORE UPDATE ON activity BEGIN
+-- UPDATE activity SET updated_at = CURRENT_TIMESTAMP WHERE id = new.id;
+-- END;
 

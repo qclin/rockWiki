@@ -1,19 +1,18 @@
 <!DOCTYPE html> 
 <head>
-
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/style.css" href='http://fonts.googleapis.com/css?family=Lato'>
+	<title>wikiROCKS</title>
 </head>
-
 	<body> 
 		<h1> wiki ~/ rockers \~ kiwi  </h1> 
-		
+		<% include partials/top %>
+		<div class ="leftchunk">
 			<% Object.keys(users).forEach(function(key){ %>
 				<a href = "/users/<%= users[key].id %>"><%= users[key].name %></a> 
 				<p> of <%= users[key].location %> </p><br>
 			<% }); %>
-
-
-		<a href ="/users/new"> register here </a><br>
-		<a href ="/"> return to wiki base</a>
+		</div>
 	</body>
 </html>
 

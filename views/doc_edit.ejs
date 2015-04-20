@@ -1,34 +1,53 @@
 <!DOCTYPE html>
+<head>
+
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/style.css" href='http://fonts.googleapis.com/css?family=Lato'>
+	<title>edit documents</title>
+
+</head>
 <body>
+	<% include partials/top %>
 	<!-- update form -->
-	<h3>Update <%= document.title %> here:</h3>
+	<h2> <%= document.title %> </h2>
+
+	<div class ="edit">
 	<form method="POST" action="/documents/<%= document.id %>?_method=PUT">
-		<input type="text" name="title" value="<%= document.title %>"><br>
+	<fieldset>
+	<legend>Update here:</legend>
+	<label for ="title"> title: </label>
+	<input type="text" name="title" id="title" value="<%= document.title %>"><br>
 
 	<!-- choose contributor id  -->
-
-	<select name ="user" required>
+	<label for ="user"> user: 
+	<select name ="user" id ="user" required>
 		<% Object.keys(users).forEach(function(key){ %>
 		<option value = "<%= users[key].id %>"> <%= users[key].name %></option>
 		<% }); %> 
 	</select>
-
+	</label>
 	<!-- categories for rock type  -->
-	<select name = "tags">
+	<label for ="category"> category: 
+	<select name = "tags" id="category">
 		<option value ='<%= document.tags%>' selected> edit category </option>
 		<option value = "igneous"> igneous </option>
 		<option value = "metamorphic"> metamorphic </option>
 		<option value = "sedimentary"> sedimentary </option>
 		<option value = "other"> other </option>
 	</select>
+	</label>
 
-		<input type="text" name ="image" value="<%= document.image %>"><br>
+	<label for ="image"> image: 
+		<input type="text" name ="image" id ="image" value="<%= document.image %>"><br>
+	</label>
 
-		<textarea name="content" rows="30" cols="60" ><%= document.content %></textarea><br>
-
-		<input type="text" name="edit_summary" placeholder ="please summarize your changes" required> 
-
+		<textarea name="content" id ="content" rows="30" cols="60" ><%= document.content %></textarea><br>
+		<input type="text" name="edit_summary" id= "note" placeholder ="please summarize your changes" required> 
+	
+	<br>
 		<button>update</button>
+	</fieldset>
 	</form>
+	</div>
 </body>
 </html>

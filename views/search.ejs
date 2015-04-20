@@ -1,0 +1,30 @@
+<!DOCTYPE html> 
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/style.css">
+	<title>search</title>
+</head>
+
+<body>
+<% include partials/top %>
+
+		<h1> wiki ~/ rocks \~ kiwi  </h1> 
+		
+
+			<% if(search.length > 0){ %>
+			<h2> search result: </h2>
+			<% Object.keys(search).forEach(function(key){ %>
+			<div class = "list">
+				<a href = "/documents/<%= search[key].id %>"><%= search[key].title %></a>
+				<%= search[key].created_at.substring(0,10); %>
+				<p><%= search[key].content.substring(0,140); %></p>
+			</div>
+			<% }); %>
+			<% }else{ %> 
+				<h3> error: no results found <h3>
+				<img src="<%= notfound %>" width ="auto" height ="300px">
+			<% } %>
+
+
+</body>
+</html>

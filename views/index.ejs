@@ -1,58 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/style.css" href='http://fonts.googleapis.com/css?family=Lato'>
 	<title>wikiROCKS</title>
-	<style>
-	.tags{
-		display: inline-block;
-		text-decoration: none;
-		border: red 1px;
-	}
-
-	</style>
 </head>
 <body>
 
+<% include partials/top %>
+	<h1> wiki ~/ |  rocks  | \~ ikiw  </h1> 
+	<div class = "leftchunk">
+	search for document by title 
 	<form method = "GET" action = "/documents/search" >
 	<input type ="text" name = "title" placeholder = "exact title"> 
 	<button>search</button>
 	</form>
 
-	<a href="/documents"> documents </a><br>
-	<a href="/users"> people</a><br>
-
-	<div class = "tags" >
-	<a href ="/tags/igneous"> igneous </a>
-	<a href ="/tags/metamorphic"> metamorphic </a>
-	<a href ="/tags/sedimentary"> sedimentary </a>
-	<a href ="/tags/other"> other </a>
-	</div>
-
 	<h2> recent activities </h2>
 <ul>
 <% Object.keys(act).forEach(function(key){ %>
-
 	<!-- glitch here: if user or document was deleted . . . name and title doesn't show  -->
 	<% if(act[key].user_id && act[key].document_id) { %>
 		<a href= "/users/<%= act[key].user_id %>"><%= act[key].name %></a> 
 		<%= act[key].event%>
-		<a href= "/documents/<%= act[key].document_id %>"><%= act[key].title %></a> <%= act[key].created_at %><br>
-
+		<a href= "/documents/<%= act[key].document_id %>"><%= act[key].title %></a>  <%= act[key].created_at %><br>
 	<% }else if(act[key].user_id === null ){ %> 
-
 		<a href= "/documents/<%= act[key].document_id %>"><%= act[key].title%> </a>
-		<%= act[key].event%> <%= act[key].created_at %> <br>
-
-	<% }else if(act[key].document_id === null ){ %>
-
+		<%= act[key].event%>  <%= act[key].created_at %> <br>
+	<% }else if(act[key].document_id === null){ %>
 		<a href= "/users/<%= act[key].user_id %>"><%= act[key].name %></a>
-		<%= act[key].event%> <%= act[key].created_at %> <br>
-		
+		<%= act[key].event%>  <%= act[key].created_at %> <br>
 	<% }else{ %>
 			<%= act[key].name %></a> <%= act[key].event%> <%= act[key].title%> </a> <%= act[key].created_at %> <br>
 		<% } %>
 <% }); %>
 </ul>
-
+	</div>
 </body>
 </html>

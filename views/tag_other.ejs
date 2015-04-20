@@ -1,27 +1,26 @@
 <!DOCTYPE html> 
 <head>
-<style>
-	.list{
-		display: inline-block;
-		margin:10px;
-	}
-</style>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/style.css" href='http://fonts.googleapis.com/css?family=Lato'>
+	<title>unknown</title>
 </head>
 
+
 	<body> 
+	<% include partials/top %>
 		<h1> Other  </h1> 
 		
 		<p> We're not sure what these are . . . yet </p>
-
-			<% Object.keys(documents).forEach(function(key){ %>
 			<div class = "list">
-				<h3> <%= documents[key].title %> </h3><br> 
+			<% Object.keys(documents).forEach(function(key){ %>
+			<li>
+				<p> <%= documents[key].title %> </p><br> 
 				<img src= "<%= documents[key].image %>" height = "100px" width = "auto"><br>
 				<a href = "/documents/<%= documents[key].id %>"> read more </a>
 
-			</div>
+			</li>
 			<% }); %>
-
+			</div>
 		<br><a href = "/"> return to search </a>
 	</body>
 	</html>

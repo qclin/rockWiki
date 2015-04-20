@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/style.css" href='http://fonts.googleapis.com/css?family=Lato'>
+	<title>rocker profile</title>
 </head>
 <body>
-	<h2><%= users.name %></h2>
-	<p>@ <%= users.location %>, <%= users.pitch %></p>
 
+<h2><%= users.name %></h2>
 
-	<div class ="authored">
+<div class ="content">
+	<p>of <%= users.location %> <br> <%= users.pitch %></p>
+	<div id="authored">
 	wrote: <br>
 
 		<% authorship.forEach(function(key){ %> 
@@ -17,27 +20,26 @@
 
 	</div>
 
-	<div class ="contributed">
+	<div id="contributed">
 	contributed to: <br>
 		<% contribution.forEach(function(key){ %> 
-		<a href="/documents/<%= key.id %>"> <%= key.title %> </a> 
+		<a href="/documents/<%= key.id %>"> <%= key.title %> </a> |
 		<% }); %>
 	</div>
 
-	<div class ="subscribed">
+	<div id="subscribed">
 	subscribed to: <br>
 		<% subscription.forEach(function(key){ %> 
-		<a href="/documents/<%= key.id %>"> <%= key.title %> </a> 
+		<a href="/documents/<%= key.id %>"> <%= key.title %> </a> |
 		<% }); %>
 	</div>
-
-	<a href ="/users/<%= users.id %>/edit"> edit user profile </a>
-	<!-- delete the user -->
+</div>
+	<div class = "footer">
+	<a href="/users"> other rockers | </a>
+	<a href ="/users/<%= users.id %>/edit"> edit profile </a>
 	<form method="POST" action="/users/<%= users.id %>?_method=DELETE">
-		<button>DELETE user</button>
+		<button>delete</button>
 	</form>
-
-<a href="/users"> see other members </a>
-
+	</div>
 </body>
 </html>

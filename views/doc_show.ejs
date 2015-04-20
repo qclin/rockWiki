@@ -1,35 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/style.css" href='http://fonts.googleapis.com/css?family=Lato'>
+	<title>rock profile</title>
 
 </head>
 <body>
-	<h2><%= document.title %></h2>
-
+	<h1><%= document.title %></h1>
+	<div class ="topleft">
 	<% if (author != null) { %> 
+	created by
 	<a href= "/users/<%= author.id%>"><%= author.name %></a>  <p> of <%= author.location %>
 	<% } %>
+	 on <%= document.created_at.substring(0,10) %> </p>
+	<a href='/documents/<%= document.id %>/subscribe'> subscribe |</a>
+	<a href='/documents'> read other </a>
+	<a href='/documents/<%= document.id %>/talk'> | talk </a>
 	
-	 created document on <%= document.created_at %> </p>
+	</div>
 
-	<p> last updated <%= document.updated_at %></p>
-	<a href='/documents/<%= document.id %>/contributions'> see history </a><br>
-	<a href='/documents/<%= document.id %>/talk'> talk </a><br>
+	<div class ="topright">
+	<p> updated <%= document.updated_at %></p>
+	<a href='/documents/<%= document.id %>/edit'> edit content |</a>
+	<a href='/documents/<%= document.id %>/contributions'> see history</a><br>
+	</div>
 
-	<img src="<%=document.image %>" width = "auto" height = "300px" style = "float:right" >
-	  <%- markedContent %>
+	<div class ="content">
+	<img src="<%=document.image %>">
+	  <%- markedContent %><br>
+	</div>
 
-	<a href='/documents/<%= document.id %>/subscribe'> subscribe to updates</a>  //or\\  (╯°□°）╯︵ ┻━┻
+	<div class = "footer">
+	(╯°□°）╯︵ ┻━┻<br>
 	<a href='/documents/<%= document.id %>/unsubscribe'> unsubscribe </a> <br>
-
-	<a href='/documents/<%= document.id %>/edit'> edit content </a>
-
 	<!-- delete the document -->
 	<form method="POST" action="/documents/<%= document.id %>?_method=DELETE">
 		<button>DELETE document</button>
 	</form>
+	</div>
 
-	<a href='/documents'> read more documents </a>
 </body>
 </html>

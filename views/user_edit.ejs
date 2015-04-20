@@ -2,36 +2,47 @@
 
 <html>
 <head> 
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/style.css" href='http://fonts.googleapis.com/css?family=Lato'>
 	<title> update </title>
 </head> 
 <body> 
 
-	<h2> edit your profile </h2>
-
+	<h2> edit <%= user.name %>'s profile </h2>
+	<div class="edit">
 	<form method = "POST" action = "/users/<%= user.id %>?_method=PUT" >
-		<label>name: 
-			<input type ="text" name ="name" value = "<%= user.name %>">
+		<fieldset>
+		<legend>Update profile:</legend>
+		<label for="name">name: 
+			<input type ="text" name ="name" id ="name" value = "<%= user.name %>">
 		</label>
-		<label>location: 
-		<input type ="text" name ="location" value = "<%= user.location %>">
-		</label>
-		<label>pitch: 
-		<input type ="text" name ="pitch" value = "<%= user.pitch %>">
-		</label>
-		<label>email: 
-		<input type ="text" name ="email_address" value = "<%= user.email_address %>">
+		<label for="location">location: 
+		<input type ="text" name ="location" id ="location" value = "<%= user.location %>">
 		</label>
 
-		<div class ="subscribed">
-			unsubscribed: <br>
+		<label for="pitch">pitch: 
+		<input type ="text" name ="pitch" id="pitch" value = "<%= user.pitch %>">
+		</label>
+		<label for="email" >email: 
+		<input type ="text" name ="email_address" id = "email" value = "<%= user.email_address %>">
+		</label>
+	
+		
+			<label for ="unsubscribe"> unsubscribe :
 			<% subscription.forEach(function(key){ %> 
-			<input type="checkbox" name = "doc" value = "<%= key.id %>"> <%= key.title %> </a> 
+			<input type="checkbox" name = "doc" id= "unsubscribe" value = "<%= key.id %>"> <%= key.title %> </a> 
 			<% }); %>
-		</div>
-
-		<button> update </button>
+			</label>
+	<button> update </button>
+	</fieldset>
 	</form> 
+	</div><br>
 
-<a href="/users"> see all contributors </a>
-</body>
+
+	<div class = "footer">
+		<a href="/users"> other rockers |</a>
+		<a href="/documents"> rocks |</a>
+		<a href="/"> home </a>
+	</div>
+</body>	
 </html>

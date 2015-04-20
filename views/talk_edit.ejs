@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<head>
+
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/style.css" href='http://fonts.googleapis.com/css?family=Lato'>
+	<title>edit comments</title>
+
+</head>
+<body>
+	<% include partials/top %>
+	<!-- update form -->
+	<h2> <%= document.title %> </h2>
+
+	<div class ="edit">
+	<form method="POST" action="/documents/<%= document.id %>/talk/<%= talk.talk_id %>?_method=PUT">
+	<fieldset>
+	<legend>edit comment:</legend>
+
+
+		I hope it's still you >> <%=talk.name %>
+		<textarea name="note" rows="10" cols="60" required><%=talk.note %></textarea><br>
+	
+
+		<button>edit</button>
+	</fieldset>
+	</form>
+	</div>
+</body>
+</html>
