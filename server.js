@@ -279,9 +279,12 @@ app.get('/documents/:docID/contributions/:diffID', function(req,res){
 	console.log("here");
 	var docID = parseInt(req.params.docID);
 	var diffID = parseInt(req.params.diffID);
-	db.get('SELECT diff_content FROM diff WHERE diff_id =?', diffID, function(err, data){
-		console.log(data.diff_content);
-		res.render("diff.ejs", {content:  data.diff_content});
+	db.get('SELECT * FROM documents WHERE id =?', docID, function(err,row){
+		if(err){ throw err; }
+		db.get('SELECT * FROM diff WHERE diff_id =?', diffID, function(err, data){
+			if(err){ throw err; }
+			res.render("diff.ejs", { doc:row, diff:data});
+		});
 	});
 });
 
