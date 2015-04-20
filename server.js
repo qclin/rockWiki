@@ -130,7 +130,11 @@ app.get('/documents/:id/edit',function(req,res){
 app.put("/documents/:id", function(req,res){
 	var docID = parseInt(req.params.id);
 	var userID = req.body.user;
-	
+
+	// var chunk = req.body.content.charAT(/[[/w*/]]);
+	// db.get('SELECT * FROM documents WHERE title LIKE ', %[[ ]]% )
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	// // sendgrid FIRE ~~!!! 
 	// var email = new sendgrid.Email({from:'admin@wikiRocks.com'});
 	// email.subject = req.body.title + " has been updated ";
@@ -157,33 +161,27 @@ app.put("/documents/:id", function(req,res){
 	db.get("SELECT * FROM documents where id = ?", docID, function(err, oldDoc){
 		if(err){ throw err; }
 		var diff = jsdiff.diffChars(oldDoc.content, req.body.content);
-
-		// diff is now and array of objects. . . save data into new table?
-		diff.forEach(function(part){
-	  		var color = part.added ? 'green' : part.removed ? 'red' : 'grey';
-	  		res.write(part.value[color]);
+		var jdiff = JSON.stringify(diff);
+		db.run("INSERT INTO diff (document_id, user_id, edit_summary, diff_content) VALUES (?,?,?,?)", docID, userID,req.body.edit_summary, jdiff, function(err){
+			if(err){ throw err; }
+			console.log('stored');
 		});
-
-		var write = jsdiff.createPatch(sample, oldDoc.content, req.body.content, "oldHeader", "newHeader");
-
-		console.log(write);
-
-		//db.run("INSERT INTO diff (doc_id, user_id, ")
 	});
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
-	/// if requested any content, here would run request again for updates 
-	// db.run("UPDATE documents SET title = ?, content = ?, image = ?, tags = ? WHERE id = ?", req.body.title.toUpperCase(), req.body.content, req.body.image, req.body.tags, docID, function(err){
-	// 	if(err){ throw err; }
-	// 	db.run("INSERT INTO contribution (document_id, user_id, edit_summary) VALUES(?,?,?)", docID, userID, req.body.edit_summary, function(err){ 
-	// 		if(err){ throw err; }
-	// 		res.redirect('/documents/' + docID);
-	// 	});
-	// });
-	// //logging activity into recent log 
-	// db.run("INSERT INTO activity (document_id, user_id, event) VALUES (?,?,?)", docID, userID, "contributed",function(err){
-	// 	if (err){throw err;}
-	// });
+	// if requested any content, here would run request again for updates 
+	db.run("UPDATE documents SET title = ?, content = ?, image = ?, tags = ? WHERE id = ?", req.body.title.toUpperCase(), req.body.content, req.body.image, req.body.tags, docID, function(err){
+		if(err){ throw err; }
+		/// essentially the same content expands with a diff table 
+		db.run("INSERT INTO contribution (document_id, user_id, edit_summary) VALUES(?,?,?)", docID, userID, req.body.edit_summary, function(err){ 
+			if(err){ throw err; }
+			res.redirect('/documents/' + docID);
+		});
+	});
+	//logging activity into recent log 
+	db.run("INSERT INTO activity (document_id, user_id, event) VALUES (?,?,?)", docID, userID, "contributed",function(err){
+		if (err){throw err;}
+	});
 });
 
 // rendering list of existing users 
@@ -268,7 +266,22 @@ app.get('/documents/:docID/contributions', function(req,res){
 	var docID = parseInt(req.params.docID);
 	db.all("SELECT * FROM contribution INNER JOIN users ON users.id = contribution.user_id WHERE contribution.document_id = ? ORDER BY updated_at DESC", docID, function(err,data){
 		if(err){ throw err; }
-		res.render('contributions.ejs', {contribution:data});
+		db.all("SELECT * FROM diff INNER JOIN users ON users.id = diff.user_id WHERE diff.document_id = ? ORDER BY updated_at DESC", docID, function(err,rows){
+			if(err){console.log(err);}
+			//JSON.parse(rows);
+			console.log(rows); /// a array of objects with diff_content still an json object 
+			res.render('contributions.ejs', {contribution:data, diff:rows});
+		});
+	});
+});
+/// rendering individual diff pages
+app.get('/documents/:docID/contributions/:diffID', function(req,res){
+	console.log("here");
+	var docID = parseInt(req.params.docID);
+	var diffID = parseInt(req.params.diffID);
+	db.get('SELECT diff_content FROM diff WHERE diff_id =?', diffID, function(err, data){
+		console.log(data.diff_content);
+		res.render("diff.ejs", {content:  data.diff_content});
 	});
 });
 
