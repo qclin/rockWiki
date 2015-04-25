@@ -12,13 +12,14 @@
 	<p color style ="color: red"> red =  deleted text </p>
 	<p color style ="color: green"> green =  added text </p>
 
+	<!-- <div class ="container"> -->
+	<div id="display"></div>
+	<!-- </div> -->
 
-	<pre id="display"></pre>
 	<script src="/diff.js"></script>
 	
 	<script>
 	var diff = <%- diff.diff_content %>;
-
 	diff.forEach(function(part){
 	  // green for additions, red for deletions
 	  // grey for common parts
@@ -26,10 +27,10 @@
 	    part.removed ? 'red' : 'grey';
 	  var span = document.createElement('span');
 	  span.style.color = color;
-	  span.appendChild(document
-	    .createTextNode(part.value));
+	  span.appendChild(document.createTextNode(part.value));
 	  display.appendChild(span);
 	});
+
 	</script>
 	
 

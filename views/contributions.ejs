@@ -9,23 +9,6 @@
 <body>
 
 	<% include partials/top %>
-
-	<% if(contribution.length === 0){ %>
-
-		<h1> looks like a fresh field; Go head plow away~!  </h1>
-
-	<% }else{ %>
-	<h2> recent contributions: </h2>
-	<div class = "list">
-	<% for(var i = 0; i < contribution.length; i++){ %>
-		<p> <%= contribution[i].updated_at %>
-		<%= contribution[i].name %> of <%= contribution[i].location %>
-		<%= contribution[i].edit_summary %> </p> 
-	<% } %>
-	</div>
-	<% } %>
-
-
 	<% if(diff.length === 0){ %>
 
 		<h1> looks like a fresh field; Go head plow away~!  </h1>

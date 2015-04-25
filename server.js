@@ -17,7 +17,7 @@ marked.setOptions({
   smartypants: false
 });
 var sendgrid  = require('sendgrid')(secrets['user'], secrets['sendgridkey']);
-require('colors')
+require('colors');
 var jsdiff = require('diff');
 var app = express(); 
 app.set('view engine', 'ejs');
@@ -92,6 +92,24 @@ app.get("/documents/:id",function(req,res){
 		res.redirect('/*'); //redirect to LSP 
 		//res.redirect('/documents'); 
 	} else {
+//***********************************************************************************
+	// db.all("SELECT id,title FROM documents;", function(err, rows){
+	// 	if(err){ throw err; }
+	// 	var pair = [];
+	// 	Object.keys(rows).forEach(function(key){
+	// 		pair.push(rows[key].id,rows[key].title);
+	// 	});
+	// 	console.log(pair);
+	// // 	db.get("SELECT * FROM documents WHERE id = ?", docID, function(err, row){
+	// // 	 	if(err){ throw err; }
+	// // 		var word = row.content;
+	// // 		var regexTitle = /\[(\[\/ pair[i] \])\]/gi;
+	// // // grab [[title]] within contents and replace with markdown link [title](link);
+	// // 		var nom = word.replace(/\[(\[\w*?\])\]/g, "$1('/documents'+docid)");
+
+	// // 	});
+//**************************************************************************************
+
 		db.get("SELECT * FROM documents WHERE id = ?", docID, function(err, row){
 			if(err){ throw err; }
 			var markedBody = marked(row.content);
@@ -107,7 +125,7 @@ app.post('/documents',function(req,res){
 	//this is where you would make any api request to insert in db
 	db.run("INSERT INTO documents (title, content, author_id, image, tags) VALUES (?,?,?,?,?)", req.body.title.toUpperCase(), req.body.content, req.body.author, req.body.image, req.body.tags, function(err){
 		if(err){throw err; }
-		res.redirect('/documents') /// too tired . . . 
+		res.redirect('/documents');
 		//logging activity into recent log 
 		db.run("INSERT INTO activity (document_id, user_id, event) VALUES (?,?,?)", this.lastID, req.body.author, "created",function(err){
 			if (err){throw err;}
@@ -131,10 +149,6 @@ app.put("/documents/:id", function(req,res){
 	var docID = parseInt(req.params.id);
 	var userID = req.body.user;
 
-	// var chunk = req.body.content.charAT(/[[/w*/]]);
-	// db.get('SELECT * FROM documents WHERE title LIKE ', %[[ ]]% )
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	// sendgrid FIRE ~~!!! 
 	var email = new sendgrid.Email({from:'admin@wikiRocks.com'});
 	email.subject = req.body.title + " has been updated ";
@@ -156,7 +170,7 @@ app.put("/documents/:id", function(req,res){
 			});
 		});
 	});
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+
 	//// jsdiff 
 	db.get("SELECT * FROM documents where id = ?", docID, function(err, oldDoc){
 		if(err){ throw err; }
@@ -164,10 +178,8 @@ app.put("/documents/:id", function(req,res){
 		var jdiff = JSON.stringify(diff);
 		db.run("INSERT INTO diff (document_id, user_id, edit_summary, diff_content) VALUES (?,?,?,?)", docID, userID,req.body.edit_summary, jdiff, function(err){
 			if(err){ throw err; }
-			console.log('stored');
 		});
 	});
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 	// if requested any content, here would run request again for updates 
 	db.run("UPDATE documents SET title = ?, content = ?, image = ?, tags = ? WHERE id = ?", req.body.title.toUpperCase(), req.body.content, req.body.image, req.body.tags, docID, function(err){
@@ -264,19 +276,16 @@ app.put("/users/:id", function(req,res){
 // rendering contribution history log 
 app.get('/documents/:docID/contributions', function(req,res){
 	var docID = parseInt(req.params.docID);
-	db.all("SELECT * FROM contribution INNER JOIN users ON users.id = contribution.user_id WHERE contribution.document_id = ? ORDER BY updated_at DESC", docID, function(err,data){
-		if(err){ throw err; }
-		db.all("SELECT * FROM diff INNER JOIN users ON users.id = diff.user_id WHERE diff.document_id = ? ORDER BY updated_at DESC", docID, function(err,rows){
+	db.all("SELECT * FROM diff INNER JOIN users ON users.id = diff.user_id WHERE diff.document_id = ? ORDER BY updated_at DESC", docID, function(err,rows){
 			if(err){console.log(err);}
 			//JSON.parse(rows);
-			console.log(rows); /// a array of objects with diff_content still an json object 
-			res.render('contributions.ejs', {contribution:data, diff:rows});
-		});
+			/// a array of objects with diff_content still an json object 
+			res.render('contributions.ejs', {diff:rows});
+		
 	});
 });
 /// rendering individual diff pages
 app.get('/documents/:docID/contributions/:diffID', function(req,res){
-	console.log("here");
 	var docID = parseInt(req.params.docID);
 	var diffID = parseInt(req.params.diffID);
 	db.get('SELECT * FROM documents WHERE id =?', docID, function(err,row){
@@ -301,7 +310,7 @@ app.get('/documents/:docID/subscribe',function(req, res){
 		res.render('subscribe.ejs', {document: row, users:notsubscribed, giphy:giphy});
 		});
 	});
-});
+		});
 });
 
 // inserting into subscription table user/document data
@@ -466,7 +475,5 @@ app.get('*', function(req,res){
 app.listen(secrets['port'], function(){
 	console.log("listening on " + secrets['port']);
 });
-
-
 
 
