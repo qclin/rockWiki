@@ -34,7 +34,8 @@ app.get('/', function(req,res){
 		res.render('index.ejs', {act:all});
 	});
 	// all recent activity without addition fluff 
-	db.all("SELECT * FROM activity WHERE updated_at >= datetime('now','-1 day') ORDER BY updated_at DESC;", function(err, info){
+	//  WHERE updated_at >= datetime('now','-1 day') 
+	db.all("SELECT * FROM activity ORDER BY updated_at DESC;", function(err, info){
 		if(err){ throw err; }
 	});
 });
